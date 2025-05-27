@@ -1,0 +1,26 @@
+{
+  "name": "센터방문 개통 요청서",
+  "short_name": "개통요청서",
+  "start_url": "/",
+  "display": "standalone",
+  "theme_color": "#667eea",
+  "background_color": "#ffffff",
+  "description": "센터방문 개통 요청서 작성 및 관리 웹앱",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "orientation": "any",
+  "categories": ["business", "productivity"],
+  "prefer_related_applications": false
+} 
