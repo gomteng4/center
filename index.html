@@ -48,6 +48,7 @@
         .service-type-group {
             display: flex;
             align-items: center;
+            justify-content: flex-start;
             gap: 20px;
             padding: 10px 0;
         }
@@ -58,9 +59,19 @@
             margin: 0;
         }
 
-        .service-type-group .radio-group.vertical {
-            flex-direction: column;
-            gap: 5px;
+        .service-type-group .radio-group label {
+            white-space: nowrap;
+        }
+
+        .service-type-group .radio-group label span {
+            display: inline-block;
+        }
+
+        .service-type-group .radio-group label span.break {
+            display: block;
+            font-size: 12px;
+            text-align: center;
+            margin-top: -5px;
         }
 
         .service-type-divider {
@@ -98,16 +109,54 @@
             overflow-y: auto;
             padding: 20px;
             box-sizing: border-box;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .modal-content {
             background: white;
-            margin: 20px auto;
             padding: 20px;
             width: 210mm;
-            max-width: calc(100% - 40px);
+            max-width: 95%;
             position: relative;
             box-shadow: var(--shadow);
+            margin: 0 auto;
+        }
+
+        .preview-content {
+            width: 210mm;
+            min-height: 297mm;
+            background: white;
+            padding: 40px;
+            font-family: '맑은 고딕', sans-serif;
+            font-size: 12px;
+            line-height: 1.5;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            margin: 0 auto;
+            box-sizing: border-box;
+            transform-origin: top center;
+        }
+
+        @media (max-width: 210mm) {
+            .modal-content {
+                width: 100%;
+                height: auto;
+                transform: scale(0.95);
+                transform-origin: center center;
+            }
+
+            .preview-content {
+                width: 100%;
+                min-height: auto;
+                padding: 20px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .modal-content {
+                transform: scale(0.9);
+            }
         }
 
         .close-modal {
@@ -123,6 +172,9 @@
             cursor: pointer;
             box-shadow: var(--shadow);
             z-index: 1001;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .preview-actions {
@@ -132,22 +184,6 @@
             display: flex;
             gap: 10px;
             z-index: 1001;
-        }
-
-        @media (max-width: 768px) {
-            .header h1 {
-                font-size: 20px;
-            }
-
-            .preview-actions {
-                left: 20px;
-                right: 20px;
-                justify-content: center;
-            }
-
-            .preview-actions .btn {
-                flex: 1;
-            }
         }
 
         /* 헤더 스타일 */
@@ -457,14 +493,16 @@
                         </label>
                     </div>
                     <span class="service-type-divider">/</span>
-                    <div class="radio-group vertical">
+                    <div class="radio-group">
                         <label>
                             <input type="radio" name="serviceType" value="신규개통" checked>
-                            신규<br>개통
+                            <span>신규</span>
+                            <span class="break">개통</span>
                         </label>
                         <label>
                             <input type="radio" name="serviceType" value="번호이동">
-                            번호<br>이동
+                            <span>번호</span>
+                            <span class="break">이동</span>
                         </label>
                     </div>
                 </div>
@@ -956,8 +994,8 @@
                     logging: false,
                     useCORS: true,
                     allowTaint: true,
-                    windowWidth: 210 * 3.78, // A4 width in pixels (210mm * 3.78 pixels/mm)
-                    windowHeight: 297 * 3.78 // A4 height in pixels
+                    windowWidth: 210 * 3.78,
+                    windowHeight: 297 * 3.78
                 });
 
                 preview.style.transform = originalTransform;
@@ -969,12 +1007,32 @@
                 
                 // iOS Safari 또는 네이버 앱인 경우
                 if (/iPhone|iPad|iPod/i.test(navigator.userAgent) || isNaverApp) {
-                    // 새 창에서 이미지 열기
                     const dataUrl = canvas.toDataURL('image/png');
-                    window.open(dataUrl, '_blank');
+                    
+                    // 이미지 데이터를 Blob으로 변환
+                    const binaryStr = atob(dataUrl.split(',')[1]);
+                    const len = binaryStr.length;
+                    const arr = new Uint8Array(len);
+                    for (let i = 0; i < len; i++) {
+                        arr[i] = binaryStr.charCodeAt(i);
+                    }
+                    const blob = new Blob([arr], { type: 'image/png' });
+                    
+                    // Blob URL 생성
+                    const blobUrl = URL.createObjectURL(blob);
+                    
+                    // 새 창에서 열기
+                    const newWindow = window.open(blobUrl, '_blank');
+                    
+                    // 5초 후 Blob URL 해제
+                    setTimeout(() => {
+                        URL.revokeObjectURL(blobUrl);
+                        if (newWindow) {
+                            newWindow.document.title = fileName;
+                        }
+                    }, 5000);
                 } else {
                     try {
-                        // 파일 시스템 API 시도
                         if (window.showSaveFilePicker) {
                             const handle = await window.showSaveFilePicker({
                                 suggestedName: fileName,
@@ -991,7 +1049,6 @@
                             throw new Error('showSaveFilePicker not supported');
                         }
                     } catch (e) {
-                        // 일반적인 다운로드 방식
                         canvas.toBlob(function(blob) {
                             const url = URL.createObjectURL(blob);
                             const link = document.createElement('a');
@@ -1014,13 +1071,8 @@
 
         // 전화번호 입력 처리
         function formatPhoneNumber(input) {
-            let value = input.value.replace(/[^0-9]/g, '');
-            if (value.length > 3 && value.length <= 7) {
-                value = value.slice(0, 3) + '-' + value.slice(3);
-            } else if (value.length > 7) {
-                value = value.slice(0, 3) + '-' + value.slice(3, 7) + '-' + value.slice(7, 11);
-            }
-            input.value = value;
+            // 입력값 그대로 유지
+            input.value = input.value;
         }
 
         // 미리보기 모달 관리
@@ -1057,11 +1109,11 @@
             templates.load();
             initCollapsible();
 
-            // 전화번호 입력 필드에 이벤트 리스너 추가
+            // 전화번호 입력 필드에 maxlength 설정
             const phoneInputs = ['contactNumber', 'ownerContact'];
             phoneInputs.forEach(id => {
                 const input = $(id);
-                input.addEventListener('input', () => formatPhoneNumber(input));
+                input.maxLength = 13; // 000-0000-0000 형식
             });
 
             // 나머지 이벤트 리스너들...
