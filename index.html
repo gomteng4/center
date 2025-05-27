@@ -235,14 +235,29 @@
         }
 
         .preview-content {
-            width: 100%;
-            max-width: 800px;
+            width: 210mm;  /* A4 용지 너비 */
+            height: 297mm; /* A4 용지 높이 */
             margin: 0 auto;
             font-family: '맑은 고딕', sans-serif;
             font-size: 12px;
             line-height: 1.5;
             padding: 40px;
             background: white;
+            transform-origin: top left;
+        }
+
+        @media (max-width: 768px) {
+            .preview-content {
+                transform: scale(0.5);
+                margin: -74.25mm 0; /* (297mm * 0.5) / 2 */
+            }
+        }
+
+        @media (min-width: 769px) and (max-width: 1200px) {
+            .preview-content {
+                transform: scale(0.7);
+                margin: -44.55mm 0; /* (297mm * 0.3) / 2 */
+            }
         }
 
         .preview-content h1 {
@@ -693,7 +708,6 @@
                 </div>
             </div>
             <div class="download-buttons">
-                <button class="btn" id="downloadTxtBtn">텍스트 파일 다운로드</button>
                 <button class="btn" id="downloadImgBtn">이미지로 저장</button>
             </div>
         </section>
@@ -897,43 +911,47 @@
             try {
                 const preview = document.querySelector('.preview-content');
                 
-                // 임시 스타일 적용
-                const originalStyle = preview.style.cssText;
-                preview.style.margin = '40px auto';
-                preview.style.boxShadow = '0 0 10px rgba(0,0,0,0.1)';
-                preview.style.border = '1px solid #eee';
-                preview.style.backgroundColor = '#ffffff';
-                preview.style.borderRadius = '0';
-
+                // 원본 크기로 복원
+                const originalTransform = preview.style.transform;
+                preview.style.transform = 'none';
+                
                 const canvas = await html2canvas(preview, {
                     scale: 2,
                     backgroundColor: '#ffffff',
                     logging: false,
                     useCORS: true,
-                    allowTaint: true,
-                    onclone: function(clonedDoc) {
-                        const clonedPreview = clonedDoc.querySelector('.preview-content');
-                        clonedPreview.style.transform = 'none';
-                    }
+                    allowTaint: true
                 });
 
-                // 원래 스타일로 복구
-                preview.style.cssText = originalStyle;
+                // 원래 크기로 복구
+                preview.style.transform = originalTransform;
 
                 const date = new Date();
                 const fileName = `센터방문_개통요청서_${formatDate(date)}.png`;
                 
                 // Canvas를 이미지로 변환
-                canvas.toBlob(function(blob) {
-                    const url = URL.createObjectURL(blob);
+                if (/Android/i.test(navigator.userAgent)) {
+                    // 안드로이드의 경우 Blob URL 사용
+                    canvas.toBlob(function(blob) {
+                        const url = URL.createObjectURL(blob);
+                        const link = document.createElement('a');
+                        link.download = fileName;
+                        link.href = url;
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                        URL.revokeObjectURL(url);
+                    }, 'image/png');
+                } else {
+                    // 다른 기기의 경우 dataURL 사용
+                    const url = canvas.toDataURL('image/png');
                     const link = document.createElement('a');
                     link.download = fileName;
                     link.href = url;
                     document.body.appendChild(link);
                     link.click();
                     document.body.removeChild(link);
-                    URL.revokeObjectURL(url);
-                }, 'image/png');
+                }
             } catch (error) {
                 console.error('이미지 생성 중 오류:', error);
                 alert('이미지 저장에 실패했습니다. 다시 시도해주세요.');
@@ -976,7 +994,6 @@
             $('saveTemplate').addEventListener('click', templates.save);
             $('deleteTemplate').addEventListener('click', templates.delete);
             $('templateSelect').addEventListener('change', templates.apply);
-            $('downloadTxtBtn').addEventListener('click', downloadDocument);
             $('downloadImgBtn').addEventListener('click', downloadAsImage);
             $('modeToggle').addEventListener('click', toggleMode);
 
