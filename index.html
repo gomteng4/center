@@ -36,7 +36,7 @@
             max-width: 1400px;
             margin: 0 auto;
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: minmax(400px, 1fr) minmax(600px, 1fr);
             gap: 20px;
             background: white;
             border-radius: 10px;
@@ -232,11 +232,15 @@
             padding: 20px;
             border-radius: 10px;
             box-shadow: var(--shadow);
+            position: sticky;
+            top: 20px;
+            max-height: calc(100vh - 40px);
+            overflow-y: auto;
         }
 
         .preview-content {
-            width: 210mm;  /* A4 용지 너비 */
-            height: 297mm; /* A4 용지 높이 */
+            width: 210mm;
+            height: 297mm;
             margin: 0 auto;
             font-family: '맑은 고딕', sans-serif;
             font-size: 12px;
@@ -244,19 +248,21 @@
             padding: 40px;
             background: white;
             transform-origin: top left;
+            border: 1px solid #ddd;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        @media (max-width: 1400px) {
+            .preview-content {
+                transform: scale(0.7);
+                margin: -44.55mm 0;
+            }
         }
 
         @media (max-width: 768px) {
             .preview-content {
                 transform: scale(0.5);
-                margin: -74.25mm 0; /* (297mm * 0.5) / 2 */
-            }
-        }
-
-        @media (min-width: 769px) and (max-width: 1200px) {
-            .preview-content {
-                transform: scale(0.7);
-                margin: -44.55mm 0; /* (297mm * 0.3) / 2 */
+                margin: -74.25mm 0;
             }
         }
 
@@ -505,6 +511,25 @@
                         <button class="btn" id="saveTemplate">템플릿 저장</button>
                         <button class="btn" id="deleteTemplate">템플릿 삭제</button>
                     </div>
+                </div>
+            </div>
+
+            <!-- 매출자 정보 템플릿 -->
+            <div class="form-section">
+                <h2>매출자 정보</h2>
+                <div class="form-group">
+                    <label>저장된 매출자 선택</label>
+                    <select id="salesSelect" style="margin-bottom: 15px;">
+                        <option value="">매출자 선택</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>회원번호</label>
+                    <input type="text" id="salesMemberNumber" placeholder="예: *917672">
+                </div>
+                <div class="form-group">
+                    <label>회원명</label>
+                    <input type="text" id="salesMemberName" placeholder="예: 이영선">
                 </div>
             </div>
 
@@ -839,6 +864,33 @@
             }
         };
 
+        // 매출자 정보 관리
+        const salesInfo = {
+            load: () => {
+                const saved = storage.load('templates') || [];
+                const select = $('salesSelect');
+                select.innerHTML = '<option value="">매출자 선택</option>';
+                saved.forEach(template => {
+                    const option = document.createElement('option');
+                    option.value = template.name;
+                    option.textContent = `${template.name} (${template.memberNumber})`;
+                    select.appendChild(option);
+                });
+            },
+            apply: () => {
+                const name = $('salesSelect').value;
+                if (!name) return;
+
+                const saved = storage.load('templates') || [];
+                const template = saved.find(t => t.name === name);
+                if (template) {
+                    $('salesMemberNumber').value = template.memberNumber;
+                    $('salesMemberName').value = template.memberName;
+                    updatePreview();
+                }
+            }
+        };
+
         // 미리보기 업데이트
         function updatePreview() {
             // 서비스 유형
@@ -850,8 +902,8 @@
             $('previewServiceType2').classList.toggle('checked', serviceType === '번호이동');
 
             // 매출자 정보
-            $('previewSalesNumber').textContent = $('templateMemberNumber').value;
-            $('previewSalesName').textContent = $('templateMemberName').value;
+            $('previewSalesNumber').textContent = $('salesMemberNumber').value;
+            $('previewSalesName').textContent = $('salesMemberName').value;
 
             // 개통 정보
             $('previewOwnerName').textContent = $('ownerName').value;
@@ -976,6 +1028,7 @@
             // 기존 이벤트 리스너
             centerInfo.load();
             templates.load();
+            salesInfo.load();
 
             // 모든 입력 필드에 대한 실시간 업데이트
             const inputElements = document.querySelectorAll('input, select, textarea');
@@ -994,6 +1047,7 @@
             $('saveTemplate').addEventListener('click', templates.save);
             $('deleteTemplate').addEventListener('click', templates.delete);
             $('templateSelect').addEventListener('change', templates.apply);
+            $('salesSelect').addEventListener('change', salesInfo.apply);
             $('downloadImgBtn').addEventListener('click', downloadAsImage);
             $('modeToggle').addEventListener('click', toggleMode);
 
