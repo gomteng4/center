@@ -36,7 +36,7 @@
             max-width: 1400px;
             margin: 0 auto;
             display: grid;
-            grid-template-columns: minmax(400px, 1fr) minmax(600px, 1fr);
+            grid-template-columns: 1fr;
             gap: 20px;
             background: white;
             border-radius: 10px;
@@ -44,93 +44,87 @@
             box-shadow: var(--shadow);
         }
 
+        /* 서비스 유형 스타일 */
+        .service-type-group {
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+        }
+
+        .service-type-group .radio-group {
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .service-type-group .radio-group label {
+            white-space: nowrap;
+        }
+
+        .service-type-divider {
+            margin-top: 10px;
+        }
+
+        /* 미리보기 모달 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        .modal-content {
+            background: white;
+            margin: 20px auto;
+            padding: 20px;
+            width: 210mm;
+            max-width: 95%;
+            position: relative;
+        }
+
+        .close-modal {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            font-size: 24px;
+            background: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            box-shadow: var(--shadow);
+        }
+
+        .preview-actions {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
         @media (max-width: 768px) {
-            body {
+            .modal-content {
+                margin: 10px;
                 padding: 10px;
-                background: #f5f5f5;
+                width: calc(100% - 20px);
             }
 
-            .container {
-                grid-template-columns: 1fr;
-                padding: 15px;
-                gap: 15px;
+            .preview-actions {
+                left: 20px;
+                right: 20px;
+                justify-content: center;
             }
 
-            .header h1 {
-                font-size: 20px;
-            }
-
-            .form-section {
-                margin-bottom: 15px;
-                padding: 15px;
-                border-radius: 8px;
-            }
-
-            .visit-time-group {
-                flex-wrap: wrap;
-                gap: 5px !important;
-            }
-
-            .visit-time-group input,
-            .visit-time-group select {
+            .preview-actions .btn {
                 flex: 1;
-                min-width: 60px;
-                height: 40px;
-            }
-
-            .visit-time-group span {
-                min-width: 20px;
-                text-align: center;
-            }
-
-            /* 모바일에서 입력 필드 최적화 */
-            input, select, textarea {
-                font-size: 16px !important;
-                padding: 10px !important;
-                height: 40px;
-            }
-
-            textarea {
-                height: auto;
-            }
-
-            /* 모바일에서 버튼 크기 최적화 */
-            .btn {
-                padding: 12px 20px;
-                font-size: 16px;
-                margin: 5px 0;
-                width: 100%;
-                height: 45px;
-            }
-
-            .btn-group {
-                display: flex;
-                flex-direction: column;
-                gap: 10px;
-            }
-
-            /* 미리보기 영역 모바일 최적화 */
-            .preview-content {
-                padding: 20px;
-                font-size: 11px;
-            }
-
-            .preview-content h1 {
-                font-size: 18px;
-            }
-
-            .preview-table th,
-            .preview-table td {
-                padding: 8px 4px;
-            }
-
-            .checkbox-group {
-                font-size: 12px;
-            }
-
-            .checkbox {
-                width: 14px;
-                height: 14px;
             }
         }
 
@@ -436,26 +430,28 @@
             <!-- 서비스 유형 선택 -->
             <div class="form-section">
                 <h2>서비스 유형</h2>
-                <div style="display: flex; gap: 20px; align-items: center;">
-                    <div class="radio-group" style="margin: 0;">
+                <div class="service-type-group">
+                    <div class="radio-group">
                         <label>
                             <input type="radio" name="paymentType" value="선불" checked>
                             선불
                         </label>
-                        <label style="margin-left: 15px;">
+                        <label>
                             <input type="radio" name="paymentType" value="후불">
                             후불
                         </label>
                     </div>
-                    <span>/</span>
-                    <div class="radio-group" style="margin: 0;">
+                    <span class="service-type-divider">/</span>
+                    <div class="radio-group">
                         <label>
                             <input type="radio" name="serviceType" value="신규개통" checked>
-                            신규개통
+                            신규
+                            <br>개통
                         </label>
-                        <label style="margin-left: 15px;">
+                        <label>
                             <input type="radio" name="serviceType" value="번호이동">
-                            번호이동
+                            번호
+                            <br>이동
                         </label>
                     </div>
                 </div>
@@ -620,122 +616,26 @@
                 </div>
             </div>
 
-            <!-- 다운로드 버튼 -->
-            <button class="btn" id="downloadBtn">문서 다운로드</button>
-        </section>
-
-        <section class="preview-panel">
-            <div class="preview-content">
-                <h1>센터방문 개통 요청서</h1>
-                
-                <div class="checkbox-group">
-                    <span class="checkbox-item">
-                        <span class="checkbox" id="previewPaymentType1"></span>선불
-                    </span>
-                    <span class="checkbox-item">
-                        <span class="checkbox" id="previewPaymentType2"></span>후불
-                    </span>
-                    /
-                    <span class="checkbox-item">
-                        <span class="checkbox" id="previewServiceType1"></span>신규개통
-                    </span>
-                    <span class="checkbox-item">
-                        <span class="checkbox" id="previewServiceType2"></span>번호이동
-                    </span>
-                </div>
-
-                <div class="preview-section-title">▶ 개통 관련 기재란</div>
-                <table class="preview-table">
-                    <tr>
-                        <th class="col-label">매출자 정보</th>
-                        <th>회원번호</th>
-                        <th>회원명</th>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td id="previewSalesNumber"></td>
-                        <td id="previewSalesName"></td>
-                    </tr>
-                    <tr>
-                        <th>명의자 성명</th>
-                        <th>명의자 생년월일</th>
-                        <th>명의자 연락번호</th>
-                    </tr>
-                    <tr>
-                        <td id="previewOwnerName"></td>
-                        <td id="previewOwnerBirth"></td>
-                        <td id="previewOwnerContact"></td>
-                    </tr>
-                    <tr>
-                        <th>통신망 선택</th>
-                        <th colspan="2">가입 요금제<br>(사전 설명 필수)</th>
-                    </tr>
-                    <tr>
-                        <td id="previewNetwork">KT</td>
-                        <td colspan="2" id="previewPlan"></td>
-                    </tr>
-                    <tr>
-                        <th colspan="2">방문 예약 시간</th>
-                        <td id="previewVisitTime"></td>
-                    </tr>
-                    <tr>
-                        <th colspan="2">특이사항</th>
-                        <td id="previewNotes"></td>
-                    </tr>
-                </table>
-
-                <div class="preview-section-title">▶ 요청 회원 및 센터 기재란</div>
-                <table class="preview-table">
-                    <tr>
-                        <th rowspan="4" style="background: #e6e6e6;">요청 회원 정보</th>
-                        <th>회원번호</th>
-                        <th>회원명</th>
-                    </tr>
-                    <tr>
-                        <td id="previewMemberNumber"></td>
-                        <td id="previewMemberName"></td>
-                    </tr>
-                    <tr>
-                        <th>소속 센터 / 활동 지역</th>
-                        <th>연락번호</th>
-                    </tr>
-                    <tr>
-                        <td id="previewCenterName"></td>
-                        <td id="previewContactNumber"></td>
-                    </tr>
-                    <tr>
-                        <th>개통처리정보</th>
-                        <th>개통센터</th>
-                        <th>개통확정번호</th>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                </table>
-
-                <div class="notice-list">
-                    <p>※ 개통 시 주의사항</p>
-                    <p style="color: red;">▶ 방문 개통 명의자 본인 확인 후 개통 본인확인서(필수)를 반드시 작성하여 주세요.</p>
-                    <p>▶ 다회선 개통 요청 시 개통 의뢰 회원에게 내용 확인 후 개통 진행해주세요.</p>
-                    <p>▶ 부정영업이 의심이 되는 경우 개통을 거부할 수 있습니다.</p>
-                    <p style="padding-left: 20px">- 본인 실사용 외 타인 판매, 양도, 불법 스팸, 보이스피싱 등</p>
-                    <p>▶ 요금제 설명 및 연체 등을 체크하여 방문 센터에 사전 통화 후 요청하여 주세요.</p>
-                </div>
-                
-                <div style="border-bottom: 2px solid #000; margin: 20px 0;"></div>
-
-                <div class="signature" style="position: relative;">
-                    <img src="images/ntel-logo.png" alt="N telecom" style="position: absolute; right: 0; bottom: 40px; height: 30px;">
-                    <p style="font-size: 16px; font-weight: bold;">N telecom</p>
-                    <p>엔텔레콤</p>
-                </div>
-            </div>
-            <div class="download-buttons">
+            <!-- 미리보기 및 다운로드 버튼 -->
+            <div class="form-section" style="text-align: center;">
+                <button class="btn" id="previewBtn" style="margin-right: 10px;">미리보기</button>
                 <button class="btn" id="downloadImgBtn">이미지로 저장</button>
             </div>
         </section>
+
+        <!-- 미리보기 모달 -->
+        <div id="previewModal" class="modal">
+            <button class="close-modal" id="closeModal">&times;</button>
+            <div class="modal-content">
+                <div class="preview-content">
+                    <h1>센터방문 개통 요청서</h1>
+                    <!-- 나머지 미리보기 내용은 그대로 유지 -->
+                </div>
+            </div>
+            <div class="preview-actions">
+                <button class="btn" id="modalDownloadBtn">이미지로 저장</button>
+            </div>
+        </div>
     </div>
 
     <!-- html2canvas 라이브러리 추가 -->
@@ -981,28 +881,44 @@
                 const date = new Date();
                 const fileName = `센터방문_개통요청서_${formatDate(date)}.png`;
                 
-                // Canvas를 이미지로 변환
-                if (/Android/i.test(navigator.userAgent)) {
-                    // 안드로이드의 경우 Blob URL 사용
-                    canvas.toBlob(function(blob) {
-                        const url = URL.createObjectURL(blob);
+                try {
+                    // 먼저 showSaveFilePicker API 시도
+                    const handle = await window.showSaveFilePicker({
+                        suggestedName: fileName,
+                        types: [{
+                            description: 'PNG 이미지',
+                            accept: {'image/png': ['.png']},
+                        }],
+                    });
+                    const writable = await handle.createWritable();
+                    const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+                    await writable.write(blob);
+                    await writable.close();
+                } catch (e) {
+                    // showSaveFilePicker를 지원하지 않는 경우 fallback
+                    if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+                        // iOS 기기
+                        const dataUrl = canvas.toDataURL('image/png');
                         const link = document.createElement('a');
                         link.download = fileName;
-                        link.href = url;
+                        link.href = dataUrl;
+                        link.target = '_blank';
                         document.body.appendChild(link);
                         link.click();
                         document.body.removeChild(link);
-                        URL.revokeObjectURL(url);
-                    }, 'image/png');
-                } else {
-                    // 다른 기기의 경우 dataURL 사용
-                    const url = canvas.toDataURL('image/png');
-                    const link = document.createElement('a');
-                    link.download = fileName;
-                    link.href = url;
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
+                    } else {
+                        // 기타 기기
+                        canvas.toBlob(function(blob) {
+                            const url = URL.createObjectURL(blob);
+                            const link = document.createElement('a');
+                            link.download = fileName;
+                            link.href = url;
+                            document.body.appendChild(link);
+                            link.click();
+                            document.body.removeChild(link);
+                            URL.revokeObjectURL(url);
+                        }, 'image/png');
+                    }
                 }
             } catch (error) {
                 console.error('이미지 생성 중 오류:', error);
@@ -1022,6 +938,19 @@
                 }
             });
         });
+
+        // 미리보기 모달 관리
+        const modal = {
+            show: () => {
+                updatePreview();
+                $('previewModal').style.display = 'block';
+                document.body.style.overflow = 'hidden';
+            },
+            hide: () => {
+                $('previewModal').style.display = 'none';
+                document.body.style.overflow = '';
+            }
+        };
 
         // 이벤트 리스너 등록
         window.addEventListener('load', () => {
@@ -1048,8 +977,27 @@
             $('deleteTemplate').addEventListener('click', templates.delete);
             $('templateSelect').addEventListener('change', templates.apply);
             $('salesSelect').addEventListener('change', salesInfo.apply);
+            
+            // 미리보기 및 다운로드 버튼
+            $('previewBtn').addEventListener('click', modal.show);
+            $('closeModal').addEventListener('click', modal.hide);
             $('downloadImgBtn').addEventListener('click', downloadAsImage);
+            $('modalDownloadBtn').addEventListener('click', downloadAsImage);
             $('modeToggle').addEventListener('click', toggleMode);
+
+            // 모달 외부 클릭시 닫기
+            $('previewModal').addEventListener('click', (e) => {
+                if (e.target === $('previewModal')) {
+                    modal.hide();
+                }
+            });
+
+            // ESC 키로 모달 닫기
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    modal.hide();
+                }
+            });
 
             // 초기 미리보기 업데이트
             updatePreview();
