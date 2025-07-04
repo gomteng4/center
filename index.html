@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>센터 방문 개통 요청서</title>
+    <link rel="stylesheet" href="style.css?v=2024122214">
+</head>
+<body>
+    <div class="container">
+        <!-- 헤더 -->
+        <header class="header">
+            <h1>센터 방문 개통 요청서</h1>
+            <div class="header-buttons">
+                <button id="profileBtn" class="btn btn-secondary">프로필 관리</button>
+                <button id="previewBtn" class="btn btn-primary">미리보기</button>
+            </div>
+        </header>
+
+        <!-- 프로필 관리 모달 -->
+        <div id="profileModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>프로필 관리</h2>
+                    <span class="close">&times;</span>
+                </div>
+                <div class="modal-body">
+                    <div class="profile-section">
+                        <h3>매출자 정보</h3>
+                        <div class="input-group">
+                            <label for="sellerSelect">저장된 매출자 선택</label>
+                            <select id="sellerSelect">
+                                <option value="">새로 입력</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label for="sellerName">매출자 이름 (저장용)</label>
+                            <input type="text" id="sellerName">
+                        </div>
+                        <div class="input-group">
+                            <label for="storeId">매출자 번호</label>
+                            <input type="text" id="storeId">
+                        </div>
+                        <div class="input-group">
+                            <label for="storeName">매출자 이름</label>
+                            <input type="text" id="storeName">
+                        </div>
+                    </div>
+
+                    <div class="profile-section">
+                        <h3>요청 회원 정보</h3>
+                        <div class="input-group">
+                            <label for="requestId">회원번호</label>
+                            <input type="text" id="requestId">
+                        </div>
+                        <div class="input-group">
+                            <label for="requestName">회원명</label>
+                            <input type="text" id="requestName">
+                        </div>
+                        <div class="input-group">
+                            <label for="requestCenter">센터</label>
+                            <input type="text" id="requestCenter">
+                        </div>
+                        <div class="input-group">
+                            <label for="requestPhone">연락처</label>
+                            <input type="tel" id="requestPhone">
+                        </div>
+                    </div>
+
+                    <div class="profile-buttons">
+                        <button id="saveProfile" class="btn btn-primary">저장</button>
+                        <button id="loadProfile" class="btn btn-secondary">불러오기</button>
+                        <button id="deleteSeller" class="btn btn-danger">매출자 삭제</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 입력 폼 -->
+        <div class="form-container">
+            <div class="form-section">
+                <h3>매출자 선택</h3>
+                <div class="input-group">
+                    <label for="mainSellerSelect">저장된 매출자 선택</label>
+                    <select id="mainSellerSelect">
+                        <option value="">매출자를 선택하세요</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3>개통 관련 기재란</h3>
+                
+                <div class="checkbox-group">
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="newContract" name="contractType" value="신규개통">
+                        <label for="newContract">신규개통</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="numberPorting" name="contractType" value="번호이동">
+                        <label for="numberPorting">번호이동</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="prepaid" name="paymentType" value="선불">
+                        <label for="prepaid">선불</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="postpaid" name="paymentType" value="후불">
+                        <label for="postpaid">후불</label>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label for="ownerName">명의자 성명</label>
+                    <input type="text" id="ownerName">
+                </div>
+
+                <div class="input-group">
+                    <label for="ownerBirth">명의자 생년월일</label>
+                    <input type="text" id="ownerBirth">
+                </div>
+
+                <div class="input-group">
+                    <label for="ownerPhone">명의자 연락번호</label>
+                    <input type="tel" id="ownerPhone">
+                </div>
+
+                <div class="input-group">
+                    <label for="planName">요금제</label>
+                    <input type="text" id="planName">
+                </div>
+
+                <div class="input-group">
+                    <label for="planNetwork">통신망</label>
+                    <select id="planNetwork">
+                        <option value="">선택하세요</option>
+                        <option value="KT">KT</option>
+                        <option value="LG U+">LG U+</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label for="currentCarrier">기존 통신사</label>
+                    <input type="text" id="currentCarrier">
+                </div>
+
+                <div class="input-group">
+                    <label for="currentNumber">기존 사용번호</label>
+                    <input type="tel" id="currentNumber">
+                </div>
+
+                <div class="input-group">
+                    <label for="visitDate">방문 예약 시간</label>
+                    <input type="date" id="visitDate">
+                </div>
+
+                <div class="input-group">
+                    <label for="visitTime">방문 시간</label>
+                    <select id="visitTime">
+                        <option value="">시간 선택</option>
+                        <option value="09:00">09:00</option>
+                        <option value="09:10">09:10</option>
+                        <option value="09:20">09:20</option>
+                        <option value="09:30">09:30</option>
+                        <option value="09:40">09:40</option>
+                        <option value="09:50">09:50</option>
+                        <option value="10:00">10:00</option>
+                        <option value="10:10">10:10</option>
+                        <option value="10:20">10:20</option>
+                        <option value="10:30">10:30</option>
+                        <option value="10:40">10:40</option>
+                        <option value="10:50">10:50</option>
+                        <option value="11:00">11:00</option>
+                        <option value="11:10">11:10</option>
+                        <option value="11:20">11:20</option>
+                        <option value="11:30">11:30</option>
+                        <option value="11:40">11:40</option>
+                        <option value="11:50">11:50</option>
+                        <option value="12:00">12:00</option>
+                        <option value="12:10">12:10</option>
+                        <option value="12:20">12:20</option>
+                        <option value="12:30">12:30</option>
+                        <option value="12:40">12:40</option>
+                        <option value="12:50">12:50</option>
+                        <option value="13:00">13:00</option>
+                        <option value="13:10">13:10</option>
+                        <option value="13:20">13:20</option>
+                        <option value="13:30">13:30</option>
+                        <option value="13:40">13:40</option>
+                        <option value="13:50">13:50</option>
+                        <option value="14:00">14:00</option>
+                        <option value="14:10">14:10</option>
+                        <option value="14:20">14:20</option>
+                        <option value="14:30">14:30</option>
+                        <option value="14:40">14:40</option>
+                        <option value="14:50">14:50</option>
+                        <option value="15:00">15:00</option>
+                        <option value="15:10">15:10</option>
+                        <option value="15:20">15:20</option>
+                        <option value="15:30">15:30</option>
+                        <option value="15:40">15:40</option>
+                        <option value="15:50">15:50</option>
+                        <option value="16:00">16:00</option>
+                        <option value="16:10">16:10</option>
+                        <option value="16:20">16:20</option>
+                        <option value="16:30">16:30</option>
+                        <option value="16:40">16:40</option>
+                        <option value="16:50">16:50</option>
+                        <option value="17:00">17:00</option>
+                        <option value="17:10">17:10</option>
+                        <option value="17:20">17:20</option>
+                        <option value="17:30">17:30</option>
+                        <option value="17:40">17:40</option>
+                        <option value="17:50">17:50</option>
+                        <option value="18:00">18:00</option>
+                        <option value="18:10">18:10</option>
+                        <option value="18:20">18:20</option>
+                        <option value="18:30">18:30</option>
+                        <option value="18:40">18:40</option>
+                        <option value="18:50">18:50</option>
+                        <option value="19:00">19:00</option>
+                        <option value="19:10">19:10</option>
+                        <option value="19:20">19:20</option>
+                        <option value="19:30">19:30</option>
+                        <option value="19:40">19:40</option>
+                        <option value="19:50">19:50</option>
+                        <option value="20:00">20:00</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label for="specialNote">특이사항</label>
+                    <textarea id="specialNote"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- 미리보기 모달 -->
+        <div id="previewModal" class="modal">
+            <div class="modal-content preview-modal">
+                <div class="modal-header">
+                    <h2>미리보기</h2>
+                    <div class="modal-buttons">
+                        <button id="downloadBtn" class="btn btn-success">다운로드</button>
+                        <span class="close">&times;</span>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <div class="preview-container">
+                        <div class="zoom-controls">
+                            <button class="zoom-btn" id="zoomOut" title="축소">-</button>
+                            <button class="zoom-btn" id="resetZoom" title="원본크기">⌂</button>
+                            <button class="zoom-btn" id="zoomIn" title="확대">+</button>
+                        </div>
+                        <div id="previewContent" class="preview-content">
+                            <!-- 미리보기 내용이 여기에 생성됩니다 -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="script.js?v=2024122214"></script>
+</body>
+</html> 

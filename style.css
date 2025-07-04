@@ -1,0 +1,697 @@
+/* 기본 스타일 설정 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    line-height: 1.6;
+    color: #333;
+    background-color: #f5f5f5;
+}
+
+.container {
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 0;
+}
+
+/* 헤더 스타일 */
+.header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 1rem;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.header h1 {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+    text-align: center;
+}
+
+.header-buttons {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+}
+
+/* 버튼 스타일 */
+.btn {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    min-height: 44px; /* 모바일 터치 최소 크기 */
+}
+
+.btn-primary {
+    background: #007bff;
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #0056b3;
+    transform: translateY(-2px);
+}
+
+.btn-secondary {
+    background: #6c757d;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background: #545b62;
+    transform: translateY(-2px);
+}
+
+.btn-success {
+    background: #28a745;
+    color: white;
+}
+
+.btn-success:hover {
+    background: #1e7e34;
+    transform: translateY(-2px);
+}
+
+.btn-danger {
+    background: #dc3545;
+    color: white;
+}
+
+.btn-danger:hover {
+    background: #c82333;
+    transform: translateY(-2px);
+}
+
+/* 폼 컨테이너 */
+.form-container {
+    padding: 1rem;
+}
+
+.form-section {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    margin-bottom: 1rem;
+}
+
+/* 체크박스 전용 섹션 */
+.checkbox-section {
+    background: white;
+    padding: 1rem 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    margin-bottom: 1rem;
+    margin-top: 0.5rem;
+}
+
+.form-section h3 {
+    margin-bottom: 1.5rem;
+    color: #333;
+    font-size: 1.1rem;
+    border-bottom: 2px solid #007bff;
+    padding-bottom: 0.5rem;
+}
+
+/* 체크박스 섹션은 제목 없음 */
+.checkbox-section h3 {
+    display: none;
+}
+
+/* 입력 그룹 */
+.input-group {
+    margin-bottom: 1rem;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: #555;
+}
+
+.input-group input,
+.input-group select,
+.input-group textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+    min-height: 44px; /* 모바일 터치 최소 크기 */
+}
+
+.input-group input:focus,
+.input-group select:focus,
+.input-group textarea:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0,123,255,0.25);
+}
+
+.input-group textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+/* 체크박스 그룹 */
+.checkbox-group {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+/* 번호이동 관련 필드 */
+.number-porting-fields {
+    background: #f8f9fa;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    padding: 1rem;
+    margin: 1rem 0;
+    animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.checkbox-item {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    background: #f8f9fa;
+    transition: all 0.3s ease;
+}
+
+.checkbox-item input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    margin-right: 0.5rem;
+    cursor: pointer;
+}
+
+.checkbox-item label {
+    cursor: pointer;
+    font-weight: 500;
+    margin-bottom: 0;
+}
+
+.checkbox-item:hover {
+    background: #e9ecef;
+    border-color: #007bff;
+}
+
+.checkbox-item input[type="checkbox"]:checked + label {
+    color: #007bff;
+    font-weight: 600;
+}
+
+/* 모달 스타일 */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 2000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    backdrop-filter: blur(3px);
+}
+
+.modal-content {
+    background-color: white;
+    margin: 0;
+    padding: 0;
+    border-radius: 12px 12px 0 0;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    max-height: 90vh;
+    overflow-y: auto;
+    animation: slideUp 0.3s ease;
+}
+
+.preview-modal .modal-content {
+    margin: 2rem auto;
+    max-width: 90%;
+    max-height: 85vh;
+    position: relative;
+    bottom: auto;
+    left: auto;
+    right: auto;
+    border-radius: 12px;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(100%);
+    }
+    to {
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid #ddd;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 12px 12px 0 0;
+}
+
+.modal-header h2 {
+    font-size: 1.1rem;
+}
+
+.modal-buttons {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.close {
+    color: white;
+    font-size: 1.5rem;
+    font-weight: bold;
+    cursor: pointer;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+}
+
+.close:hover {
+    background-color: rgba(255,255,255,0.2);
+}
+
+.modal-body {
+    padding: 1.5rem;
+}
+
+/* 프로필 섹션 */
+.profile-section {
+    margin-bottom: 2rem;
+}
+
+.profile-section h3 {
+    color: #333;
+    margin-bottom: 1rem;
+    font-size: 1rem;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 0.5rem;
+}
+
+.profile-buttons {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+    margin-top: 1.5rem;
+}
+
+.profile-buttons .btn {
+    flex: 1;
+    font-size: 0.9rem;
+}
+
+/* 미리보기 콘텐츠 */
+.preview-content {
+    background: white;
+    width: 932px; /* 큰 크기 */
+    height: 1375px; /* 큰 크기 */
+    padding: 25px;
+    margin: 0 auto;
+    font-family: '맑은 고딕', 'Malgun Gothic', sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+    color: #000;
+    position: relative;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    transform-origin: center center;
+    transition: transform 0.3s ease;
+}
+
+/* 미리보기 컨테이너 */
+.preview-container {
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    box-sizing: border-box;
+    position: relative;
+}
+
+/* 줌 컨트롤 */
+.zoom-controls {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    display: flex;
+    gap: 10px;
+    z-index: 100;
+}
+
+.zoom-btn {
+    width: 40px;
+    height: 40px;
+    border: none;
+    border-radius: 50%;
+    background: rgba(0, 123, 255, 0.9);
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+
+.zoom-btn:hover {
+    background: rgba(0, 123, 255, 1);
+    transform: scale(1.1);
+}
+
+.zoom-btn:active {
+    transform: scale(0.95);
+}
+
+/* 반응형 미리보기 */
+@media (max-width: 768px) {
+    .preview-modal .modal-content {
+        max-width: 100%;
+        max-height: 100vh;
+        margin: 0;
+        border-radius: 0;
+    }
+    
+    .preview-container {
+        padding: 10px;
+    }
+    
+    .zoom-controls {
+        top: 60px;
+        right: 10px;
+    }
+    
+    .zoom-btn {
+        width: 45px;
+        height: 45px;
+        font-size: 20px;
+    }
+}
+
+/* 스크롤바 스타일링 */
+.preview-container::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+.preview-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.preview-container::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 4px;
+}
+
+.preview-container::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
+
+/* 문서 제목 */
+.document-title {
+    text-align: center;
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 25px;
+    letter-spacing: 3px;
+}
+
+/* 문서 헤더 */
+.document-header {
+    position: relative;
+    margin-bottom: 15px;
+    min-height: 45px;
+}
+
+/* 체크박스 섹션 */
+.checkbox-section {
+    position: absolute;
+    top: 30px;
+    right: 0;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+/* 체크박스 표시 */
+.checkbox-option {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border: 1.5px solid #000;
+    margin-right: 3px;
+    position: relative;
+    vertical-align: baseline;
+    background-color: white !important;
+    background: white !important;
+    box-shadow: none !important;
+    outline: none !important;
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    appearance: none !important;
+    -webkit-box-shadow: none !important;
+    -moz-box-shadow: none !important;
+    filter: none !important;
+}
+
+.checkbox-option:focus,
+.checkbox-option:hover,
+.checkbox-option:active {
+    box-shadow: none !important;
+    outline: none !important;
+    -webkit-box-shadow: none !important;
+    -moz-box-shadow: none !important;
+    background-color: white !important;
+    background: white !important;
+}
+
+.checkbox-option.checked:focus,
+.checkbox-option.checked:hover,
+.checkbox-option.checked:active {
+    background-color: #ffff00 !important;
+    background: #ffff00 !important;
+}
+
+.checkbox-option.checked {
+    background-color: #ffff00 !important;
+    background: #ffff00 !important;
+}
+
+.checkbox-option.checked::after {
+    content: '✓';
+    position: absolute;
+    top: -1px;
+    left: 1px;
+    font-size: 9px;
+    font-weight: bold;
+    color: #000;
+}
+
+/* 테이블 스타일 */
+.form-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    table-layout: fixed;
+}
+
+.form-table td,
+.form-table th {
+    border: 1px solid #000;
+    padding: 8px;
+    text-align: left;
+    vertical-align: middle;
+    overflow: hidden;
+    word-wrap: break-word;
+    word-break: break-word;
+}
+
+.form-table th {
+    background-color: #f0f0f0;
+    font-weight: bold;
+    text-align: center;
+}
+
+.form-table .label-cell {
+    background-color: #d3d3d3;
+    font-weight: bold;
+    text-align: center;
+    width: 25%;
+    max-width: 160px;
+    padding: 15px 10px;
+    font-size: 13px;
+    line-height: 1.4;
+}
+
+.form-table .value-cell {
+    padding: 15px 12px;
+    min-height: 45px;
+    font-size: 13px;
+    background-color: white;
+    text-align: center;
+    vertical-align: middle;
+    word-wrap: break-word;
+    word-break: break-word;
+    line-height: 1.4;
+    overflow: hidden;
+}
+
+.form-table .tall-cell {
+    min-height: 60px;
+    vertical-align: top;
+    padding-top: 20px;
+}
+
+/* 섹션 헤더 */
+.section-header {
+    font-size: 16px;
+    font-weight: bold;
+    margin: 25px 0 18px 0;
+}
+
+/* 주의사항 텍스트 */
+.notice-text {
+    margin-top: 20px;
+    margin-bottom: 25px;
+    font-size: 14px;
+    color: #333;
+}
+
+/* 주의사항 스타일 */
+.notice-section {
+    margin-top: 25px;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.notice-section .notice-item {
+    margin-bottom: 12px;
+    padding-left: 0;
+}
+
+.notice-section .notice-sub {
+    margin-left: 25px;
+    margin-top: 8px;
+    margin-bottom: 15px;
+    font-size: 14px;
+    color: #666;
+}
+
+/* 하단 로고 */
+.bottom-logo {
+    text-align: right;
+    margin-top: 30px;
+    padding-right: 20px;
+}
+
+.bottom-logo img {
+    width: 100px;
+    height: auto;
+    opacity: 0.9;
+}
+
+/* 태블릿 및 데스크톱 반응형 */
+@media (min-width: 768px) {
+    .container {
+        max-width: 600px;
+    }
+    
+    .header h1 {
+        font-size: 1.5rem;
+    }
+    
+    .header-buttons {
+        gap: 1rem;
+    }
+    
+    .btn {
+        padding: 1rem 2rem;
+        font-size: 1rem;
+    }
+    
+    .form-container {
+        padding: 2rem;
+    }
+    
+    .checkbox-group {
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+    }
+    
+    .modal-content {
+        border-radius: 12px;
+        position: relative;
+        bottom: auto;
+        margin: 5% auto;
+        max-width: 600px;
+        max-height: 90vh;
+        animation: fadeIn 0.3s ease;
+    }
+    
+    .preview-content {
+        transform: scale(0.6);
+        margin: -200px auto -275px auto;
+    }
+}
+
+/* 라지 데스크톱 */
+@media (min-width: 1024px) {
+    .preview-content {
+        transform: scale(0.8);
+        margin: -120px auto -150px auto;
+    }
+} 
