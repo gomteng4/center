@@ -481,11 +481,33 @@ class CenterVisitApp {
         // 모바일에서 미리보기 크기 조정 (resetZoom 대신 사용)
         this.adjustPreviewForMobile();
         
-        // 모바일에서 미리보기 컨테이너 스크롤을 맨 위로 이동
-        const previewContainer = document.querySelector('.preview-container');
-        if (previewContainer) {
-            previewContainer.scrollTop = 0;
-        }
+        // 스케일링 후 스크롤 위치를 최상단으로 이동 (약간의 지연 후 실행)
+        setTimeout(() => {
+            // 모달 자체의 스크롤을 최상단으로
+            const modal = document.getElementById('previewModal');
+            if (modal) {
+                modal.scrollTop = 0;
+            }
+            
+            // 미리보기 컨테이너 스크롤을 최상단으로 이동
+            const previewContainer = document.querySelector('.preview-container');
+            if (previewContainer) {
+                previewContainer.scrollTop = 0;
+            }
+            
+            // 미리보기 콘텐츠 스크롤도 최상단으로
+            const previewContent = document.querySelector('.preview-content');
+            if (previewContent) {
+                previewContent.scrollTop = 0;
+            }
+            
+            // 모바일에서 body 스크롤도 확인
+            if (window.innerWidth <= 768) {
+                window.scrollTo(0, 0);
+                document.body.scrollTop = 0;
+                document.documentElement.scrollTop = 0;
+            }
+        }, 100);
     }
 
     adjustPreviewForMobile() {
@@ -553,11 +575,11 @@ class CenterVisitApp {
         const previewHTML = `
             <div class="document-header">
                 <div class="document-title">센터방문 개통 요청서</div>
-                <div class="checkbox-section">
-                    <span class="checkbox-option ${formData.prepaid ? 'checked' : ''}"></span> 선불 
-                    <span class="checkbox-option ${formData.postpaid ? 'checked' : ''}"></span> 후불 / 
-                    <span class="checkbox-option ${formData.newContract ? 'checked' : ''}"></span> 신규개통 
-                    <span class="checkbox-option ${formData.numberPorting ? 'checked' : ''}"></span> 번호이동
+                <div style="position: absolute; top: 30px; right: 0; font-family: monospace; font-weight: bold; font-size: 16px; color: #000; background: none; border: none; box-shadow: none;">
+                    ${formData.prepaid ? '[✓] 선불' : '[  ] 선불'} &nbsp;&nbsp;
+                    ${formData.postpaid ? '[✓] 후불' : '[  ] 후불'} &nbsp;/&nbsp; 
+                    ${formData.newContract ? '[✓] 신규개통' : '[  ] 신규개통'} &nbsp;&nbsp;
+                    ${formData.numberPorting ? '[✓] 번호이동' : '[  ] 번호이동'}
                 </div>
             </div>
 
@@ -786,15 +808,7 @@ class CenterVisitApp {
             header.style.margin = '30px 0 20px 0';
         });
 
-        // 체크박스 섹션 스타일
-        const checkboxSection = container.querySelector('.checkbox-section');
-        if (checkboxSection) {
-            checkboxSection.style.position = 'absolute';
-            checkboxSection.style.top = '30px';
-            checkboxSection.style.right = '0';
-            checkboxSection.style.fontSize = '16px';
-            checkboxSection.style.fontWeight = 'bold';
-        }
+        // 체크박스 섹션은 이제 인라인 스타일로 처리됨 (CSS 클래스 사용 안함)
 
         // 문서 헤더 스타일
         const documentHeader = container.querySelector('.document-header');
@@ -804,38 +818,7 @@ class CenterVisitApp {
             documentHeader.style.minHeight = '50px';
         }
 
-        // 체크박스 스타일 - 간단하고 깔끔하게
-        const checkboxes = container.querySelectorAll('.checkbox-option');
-        checkboxes.forEach(checkbox => {
-            // 기본 체크박스 스타일
-            checkbox.style.cssText = `
-                display: inline-block !important;
-                width: 14px !important;
-                height: 14px !important;
-                border: 2px solid #000 !important;
-                margin-right: 4px !important;
-                vertical-align: middle !important;
-                background: white !important;
-                box-shadow: none !important;
-                outline: none !important;
-                border-radius: 0 !important;
-            `;
-        });
-
-        // 체크된 체크박스 스타일 - 노란색 배경만
-        const checkedBoxes = container.querySelectorAll('.checkbox-option.checked');
-        checkedBoxes.forEach(checkbox => {
-            checkbox.style.background = '#ffff00 !important';
-            checkbox.style.backgroundColor = '#ffff00 !important';
-            
-            // 체크 표시 추가
-            checkbox.innerHTML = '✓';
-            checkbox.style.fontSize = '11px';
-            checkbox.style.fontWeight = 'bold';
-            checkbox.style.color = '#000';
-            checkbox.style.textAlign = 'center';
-            checkbox.style.lineHeight = '12px';
-        });
+        // 체크박스는 이미 텍스트로 변경됨 (☑ ☐ 사용)
 
         // 테이블 스타일
         const tables = container.querySelectorAll('.form-table');

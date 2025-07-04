@@ -429,7 +429,7 @@ body {
     }
     
     .preview-container {
-        padding: 10px;
+        padding: 30px 10px 10px 10px;
         height: calc(100vh - 120px);
         overflow: auto;
         -webkit-overflow-scrolling: touch;
@@ -443,8 +443,8 @@ body {
     
     .zoom-controls {
         position: fixed;
-        top: 60px;
-        right: 10px;
+        top: 80px;
+        left: 10px;
         z-index: 1001;
         background: rgba(0,0,0,0.9);
         border-radius: 12px;
@@ -481,7 +481,7 @@ body {
         transform-origin: center top;
         width: 932px;
         height: 1375px;
-        margin: 10px auto;
+        margin: 20px auto;
         padding: 40px;
         font-size: 17px;
         box-shadow: 0 4px 20px rgba(0,0,0,0.1);
@@ -544,43 +544,9 @@ body {
     min-height: 45px;
 }
 
-/* 체크박스 섹션 */
-.checkbox-section {
-    position: absolute;
-    top: 30px;
-    right: 0;
-    font-size: 14px;
-    font-weight: bold;
-}
+/* 체크박스 섹션 스타일 제거됨 - 인라인 스타일로 대체 */
 
-/* 체크박스 표시 - 간단하고 깔끔하게 */
-.checkbox-option {
-    display: inline-block;
-    width: 14px;
-    height: 14px;
-    border: 2px solid #000;
-    margin-right: 4px;
-    vertical-align: middle;
-    background: white;
-    box-shadow: none;
-    outline: none;
-    border-radius: 0;
-}
-
-.checkbox-option.checked {
-    background: #ffff00;
-    background-color: #ffff00;
-}
-
-.checkbox-option.checked::after {
-    content: '✓';
-    position: absolute;
-    top: -1px;
-    left: 1px;
-    font-size: 11px;
-    font-weight: bold;
-    color: #000;
-}
+/* 체크박스 옵션 스타일 완전 제거 - 텍스트 기반으로 변경됨 */
 
 /* 테이블 스타일 */
 .form-table {
