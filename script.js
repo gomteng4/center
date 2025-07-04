@@ -613,7 +613,7 @@ class CenterVisitApp {
                 left: -2000px;
                 width: 932px;
                 min-height: 1600px;
-                padding: 40px;
+                padding: 60px;
                 background: white;
                 font-family: '맑은 고딕', 'Malgun Gothic', sans-serif;
                 font-size: 16px;
@@ -654,8 +654,8 @@ class CenterVisitApp {
             // 잠깐 더 대기 후 실제 높이 측정
             await new Promise(resolve => setTimeout(resolve, 300));
             
-            // 실제 콘텐츠 높이 측정 (적당한 여유분 추가)
-            const actualHeight = Math.max(1600, captureContainer.scrollHeight + 50);
+            // 실제 콘텐츠 높이 측정 (최소 여유분만 추가)
+            const actualHeight = Math.max(1500, captureContainer.scrollHeight + 20);
             captureContainer.style.height = actualHeight + 'px';
             
             console.log('측정된 높이:', actualHeight, '스크롤 높이:', captureContainer.scrollHeight);
@@ -671,7 +671,9 @@ class CenterVisitApp {
                 x: 0,
                 y: 0,
                 scrollX: 0,
-                scrollY: 0
+                scrollY: 0,
+                dpi: 300,
+                foreignObjectRendering: true
             };
 
             console.log('캡처 시작...');
