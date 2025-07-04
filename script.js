@@ -19,13 +19,26 @@ class CenterVisitApp {
         document.getElementById('profileBtn').addEventListener('click', () => this.openModal('profileModal'));
         document.getElementById('previewBtn').addEventListener('click', () => this.openPreview());
         
+        // 닫기 버튼 이벤트 처리 개선 (모바일 지원)
         document.querySelectorAll('.close').forEach(closeBtn => {
+            // 클릭 이벤트
             closeBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                const modal = e.target.closest('.modal');
+                this.closeModal(modal);
+            });
+            
+            // 터치 이벤트 추가 (모바일 지원)
+            closeBtn.addEventListener('touchend', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
                 const modal = e.target.closest('.modal');
                 this.closeModal(modal);
             });
         });
 
+        // 모달 배경 클릭 시 닫기
         document.querySelectorAll('.modal').forEach(modal => {
             modal.addEventListener('click', (e) => {
                 if (e.target === modal) {
@@ -49,6 +62,16 @@ class CenterVisitApp {
         document.getElementById('zoomIn').addEventListener('click', () => this.zoomIn());
         document.getElementById('zoomOut').addEventListener('click', () => this.zoomOut());
         document.getElementById('resetZoom').addEventListener('click', () => this.resetZoom());
+
+        // ESC 키로 모달 닫기
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                const openModal = document.querySelector('.modal[style*="display: block"]');
+                if (openModal) {
+                    this.closeModal(openModal);
+                }
+            }
+        });
 
         this.setupCheckboxGroups();
         this.setupRealTimeUpdate();
@@ -137,22 +160,24 @@ class CenterVisitApp {
     // 줌 기능들
     zoomIn() {
         if (this.currentZoom < this.maxZoom) {
-            this.currentZoom += 0.2;
+            this.currentZoom += 0.1;
             this.applyZoom();
         }
     }
 
     zoomOut() {
         if (this.currentZoom > this.minZoom) {
-            this.currentZoom -= 0.2;
+            this.currentZoom -= 0.1;
             this.applyZoom();
         }
     }
 
     resetZoom() {
-        // 모바일 기본 크기로 리셋
-        if (window.innerWidth <= 768) {
-            this.currentZoom = window.innerWidth <= 480 ? 0.35 : 0.45;
+        // 모바일 기본 크기로 리셋 (가독성 개선)
+        if (window.innerWidth <= 480) {
+            this.currentZoom = 0.6;  // 더 크게 조정
+        } else if (window.innerWidth <= 768) {
+            this.currentZoom = 0.7;  // 더 크게 조정
         } else {
             this.currentZoom = 1;
         }
@@ -162,16 +187,9 @@ class CenterVisitApp {
     applyZoom() {
         const previewContent = document.getElementById('previewContent');
         if (previewContent) {
-            // 기본 반응형 스케일과 줌을 결합
-            let baseScale = 1;
-            if (window.innerWidth <= 480) {
-                baseScale = 0.35;
-            } else if (window.innerWidth <= 768) {
-                baseScale = 0.45;
-            }
-            
-            const finalScale = baseScale * this.currentZoom;
-            previewContent.style.transform = `scale(${finalScale})`;
+            // 현재 줌 레벨을 직접 적용 (더 단순하고 명확한 방식)
+            previewContent.style.transform = `scale(${this.currentZoom})`;
+            previewContent.style.transformOrigin = 'center top';
         }
     }
 
@@ -455,41 +473,43 @@ class CenterVisitApp {
         console.log('미리보기 데이터:', formData);
         
         this.generatePreview();
-        this.resetZoom();
         this.openModal('previewModal');
         
         // 터치 제스처 지원 추가
         this.setupTouchGestures();
         
-        // 모바일에서 미리보기 크기 조정
+        // 모바일에서 미리보기 크기 조정 (resetZoom 대신 사용)
         this.adjustPreviewForMobile();
+        
+        // 모바일에서 미리보기 컨테이너 스크롤을 맨 위로 이동
+        const previewContainer = document.querySelector('.preview-container');
+        if (previewContainer) {
+            previewContainer.scrollTop = 0;
+        }
     }
 
     adjustPreviewForMobile() {
         const previewContent = document.querySelector('.preview-content');
         if (!previewContent) return;
 
-        // 화면 크기에 따라 미리보기 크기 조정
+        // 화면 크기에 따라 미리보기 크기 자동 조정
         const screenWidth = window.innerWidth;
         
-        if (screenWidth <= 768) {
-            // 모바일: 원본 크기로 시작, 줌아웃으로 조절 가능
-            this.currentScale = 1.0; // 원본 크기로 시작
-            previewContent.style.transform = `scale(${this.currentScale})`;
-            previewContent.style.transformOrigin = 'center center';
-            
-            // 모바일에서는 자동으로 적절한 크기로 줌아웃
-            setTimeout(() => {
-                const autoScale = Math.min(screenWidth / 932, (window.innerHeight - 150) / 1375) * 0.8;
-                this.currentScale = autoScale;
-                this.applyZoom();
-            }, 200);
+        if (screenWidth <= 480) {
+            // 작은 모바일: 읽기 쉬운 크기
+            this.currentZoom = 0.75;
+            console.log('작은 모바일 - 스케일:', this.currentZoom);
+        } else if (screenWidth <= 768) {
+            // 큰 모바일/태블릿: 조금 더 큰 크기
+            this.currentZoom = 0.85;
+            console.log('큰 모바일 - 스케일:', this.currentZoom);
         } else {
             // 데스크톱: 기본 크기
-            this.currentScale = 1.0;
-            previewContent.style.transform = 'scale(1.0)';
-            previewContent.style.transformOrigin = 'center center';
+            this.currentZoom = 1.0;
+            console.log('데스크톱 - 스케일:', this.currentZoom);
         }
+        
+        this.applyZoom();
     }
 
     generatePreview() {
@@ -637,11 +657,6 @@ class CenterVisitApp {
         
         // 미리보기 생성 완료 로그
         console.log('미리보기 생성 완료');
-        
-        // 모바일에서 크기 조정 (약간의 지연 후)
-        setTimeout(() => {
-            this.adjustPreviewForMobile();
-        }, 100);
     }
 
     async downloadImage() {
@@ -752,14 +767,15 @@ class CenterVisitApp {
     }
 
     applyCaptureStyles(container) {
-        // 문서 제목 스타일
+        // 문서 제목 스타일 - 크기 대폭 확대
         const title = container.querySelector('.document-title');
         if (title) {
-            title.style.fontSize = '26px';
+            title.style.fontSize = '32px';
             title.style.fontWeight = 'bold';
             title.style.marginBottom = '30px';
             title.style.textAlign = 'center';
-            title.style.letterSpacing = '3px';
+            title.style.letterSpacing = '4px';
+            title.style.color = '#000';
         }
 
         // 섹션 헤더 스타일
@@ -788,45 +804,37 @@ class CenterVisitApp {
             documentHeader.style.minHeight = '50px';
         }
 
-        // 체크박스 스타일 - 완전히 제거하고 다시 적용
+        // 체크박스 스타일 - 간단하고 깔끔하게
         const checkboxes = container.querySelectorAll('.checkbox-option');
         checkboxes.forEach(checkbox => {
-            // 모든 기본 스타일 제거
+            // 기본 체크박스 스타일
             checkbox.style.cssText = `
                 display: inline-block !important;
-                width: 12px !important;
-                height: 12px !important;
-                border: 1.5px solid #000 !important;
-                margin-right: 3px !important;
-                position: relative !important;
-                vertical-align: baseline !important;
-                background-color: white !important;
+                width: 14px !important;
+                height: 14px !important;
+                border: 2px solid #000 !important;
+                margin-right: 4px !important;
+                vertical-align: middle !important;
                 background: white !important;
                 box-shadow: none !important;
                 outline: none !important;
-                -webkit-appearance: none !important;
-                -moz-appearance: none !important;
-                appearance: none !important;
-                -webkit-box-shadow: none !important;
-                -moz-box-shadow: none !important;
-                filter: none !important;
                 border-radius: 0 !important;
             `;
         });
 
-        // 체크된 체크박스 스타일
+        // 체크된 체크박스 스타일 - 노란색 배경만
         const checkedBoxes = container.querySelectorAll('.checkbox-option.checked');
         checkedBoxes.forEach(checkbox => {
-            checkbox.style.backgroundColor = '#ffff00 !important';
             checkbox.style.background = '#ffff00 !important';
+            checkbox.style.backgroundColor = '#ffff00 !important';
             
             // 체크 표시 추가
             checkbox.innerHTML = '✓';
-            checkbox.style.fontSize = '9px';
+            checkbox.style.fontSize = '11px';
             checkbox.style.fontWeight = 'bold';
             checkbox.style.color = '#000';
             checkbox.style.textAlign = 'center';
-            checkbox.style.lineHeight = '10px';
+            checkbox.style.lineHeight = '12px';
         });
 
         // 테이블 스타일
