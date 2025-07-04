@@ -450,17 +450,52 @@ class CenterVisitApp {
     }
 
     openPreview() {
+        // 먼저 데이터를 확인하고 생성
+        const formData = this.getAllFormData();
+        console.log('미리보기 데이터:', formData);
+        
         this.generatePreview();
         this.resetZoom();
         this.openModal('previewModal');
         
         // 터치 제스처 지원 추가
         this.setupTouchGestures();
+        
+        // 모바일에서 미리보기 크기 조정
+        this.adjustPreviewForMobile();
+    }
+
+    adjustPreviewForMobile() {
+        const previewContainer = document.querySelector('.preview-container');
+        if (!previewContainer) return;
+
+        // 화면 크기에 따라 미리보기 크기 조정
+        const screenWidth = window.innerWidth;
+        const screenHeight = window.innerHeight;
+        
+        if (screenWidth <= 768) {
+            // 모바일: 화면에 맞게 크기 조정
+            const scale = Math.min(screenWidth / 932, screenHeight / 1375) * 0.9;
+            previewContainer.style.transform = `scale(${scale})`;
+            previewContainer.style.transformOrigin = 'center top';
+            previewContainer.style.marginTop = '20px';
+        } else {
+            // 데스크톱: 기본 크기
+            previewContainer.style.transform = 'none';
+            previewContainer.style.transformOrigin = 'center';
+            previewContainer.style.marginTop = '0';
+        }
     }
 
     generatePreview() {
         const formData = this.getAllFormData();
         const previewContent = document.getElementById('previewContent');
+        
+        if (!previewContent) {
+            console.error('미리보기 컨테이너를 찾을 수 없습니다.');
+            this.showToast('미리보기 생성에 실패했습니다.', 'error');
+            return;
+        }
         
         let visitDateFormatted = '';
         if (formData.visitDate) {
@@ -486,14 +521,11 @@ class CenterVisitApp {
             }
         }
         
-        // 디버깅용 로그 (나중에 제거 가능)
+        // 디버깅용 로그
         console.log('FormData:', formData);
-        console.log('NumberPorting:', formData.numberPorting);
-        console.log('CurrentCarrier:', formData.currentCarrier);
-        console.log('CurrentNumber:', formData.currentNumber);
-        console.log('CurrentInfoText:', currentInfoText);
+        console.log('미리보기 생성 시작');
 
-        previewContent.innerHTML = `
+        const previewHTML = `
             <div class="document-header">
                 <div class="document-title">센터방문 개통 요청서</div>
                 <div class="checkbox-section">
@@ -595,160 +627,118 @@ class CenterVisitApp {
                 <img src="https://i.ibb.co/rfzJK0KM/X.jpg" alt="N telecom 컨설팅그룹" />
             </div>
         `;
+        
+        previewContent.innerHTML = previewHTML;
+        
+        // 미리보기 생성 완료 로그
+        console.log('미리보기 생성 완료');
+        
+        // 모바일에서 크기 조정 (약간의 지연 후)
+        setTimeout(() => {
+            this.adjustPreviewForMobile();
+        }, 100);
     }
 
     async downloadImage() {
         try {
+            this.showToast('이미지를 생성 중입니다...', 'info');
+            
             const previewContent = document.getElementById('previewContent');
             if (!previewContent) {
                 throw new Error('미리보기 요소를 찾을 수 없습니다.');
             }
             
-            // 완전히 독립적인 캡처용 요소 생성
-            const captureContainer = document.createElement('div');
-            captureContainer.id = 'captureContainer';
-            captureContainer.style.cssText = `
+            // 임시 캡처용 컨테이너 생성
+            const captureWrapper = document.createElement('div');
+            captureWrapper.style.cssText = `
                 position: fixed;
-                top: -3000px;
-                left: -2000px;
+                top: 0;
+                left: 0;
                 width: 932px;
-                min-height: 1600px;
-                padding: 60px;
+                height: auto;
                 background: white;
-                font-family: '맑은 고딕', 'Malgun Gothic', sans-serif;
+                padding: 60px;
+                font-family: 'Malgun Gothic', sans-serif;
                 font-size: 16px;
                 line-height: 1.6;
                 color: #000;
-                transform: none;
-                zoom: 1;
-                overflow: visible;
-                z-index: -1;
+                z-index: 10000;
                 box-sizing: border-box;
             `;
             
-            // 미리보기 내용 복사
-            captureContainer.innerHTML = previewContent.innerHTML;
+            // 내용 복사
+            captureWrapper.innerHTML = previewContent.innerHTML;
+            document.body.appendChild(captureWrapper);
             
-            // body에 추가
-            document.body.appendChild(captureContainer);
-            
-            // 캡처용 요소 스타일 적용
-            this.applyCaptureStyles(captureContainer);
+            // 스타일 강제 적용
+            this.applyCaptureStyles(captureWrapper);
             
             // 이미지 로딩 대기
-            const images = captureContainer.querySelectorAll('img');
-            const imagePromises = Array.from(images).map(img => {
-                return new Promise((resolve) => {
-                    if (img.complete) {
-                        resolve();
-                    } else {
-                        img.onload = () => resolve();
-                        img.onerror = () => resolve(); // 에러가 나도 진행
-                        setTimeout(() => resolve(), 2000); // 2초 후 강제 진행
-                    }
-                });
-            });
-            
-            await Promise.all(imagePromises);
-            
-            // 잠깐 더 대기 후 실제 높이 측정
-            await new Promise(resolve => setTimeout(resolve, 300));
-            
-            // 실제 콘텐츠 높이 측정 (최소 여유분만 추가)
-            const actualHeight = Math.max(1500, captureContainer.scrollHeight + 20);
-            captureContainer.style.height = actualHeight + 'px';
-            
-            console.log('측정된 높이:', actualHeight, '스크롤 높이:', captureContainer.scrollHeight);
-            
-            const options = {
-                scale: 2,
-                useCORS: true,
-                allowTaint: true,
-                backgroundColor: '#ffffff',
-                logging: false,
-                width: 932,
-                height: actualHeight,
-                x: 0,
-                y: 0,
-                scrollX: 0,
-                scrollY: 0,
-                dpi: 300,
-                foreignObjectRendering: true
-            };
-
-            console.log('캡처 시작...');
-            const canvas = await html2canvas(captureContainer, options);
-            console.log('캡처 완료:', canvas.width, 'x', canvas.height);
-            
-            // 임시 요소 제거
-            document.body.removeChild(captureContainer);
-            
-            // 캔버스가 비어있는지 확인
-            if (canvas.width === 0 || canvas.height === 0) {
-                throw new Error('캔버스가 비어있습니다.');
+            const images = captureWrapper.querySelectorAll('img');
+            for (const img of images) {
+                if (!img.complete) {
+                    await new Promise(resolve => {
+                        img.onload = resolve;
+                        img.onerror = resolve;
+                        setTimeout(resolve, 2000);
+                    });
+                }
             }
             
-            // 파일명 생성 (JPG로 변경)
+            // 잠깐 대기
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            // 실제 높이 계산
+            const contentHeight = Math.max(1400, captureWrapper.scrollHeight);
+            
+            // html2canvas 옵션
+            const options = {
+                backgroundColor: '#ffffff',
+                width: 932,
+                height: contentHeight,
+                scale: 1,
+                useCORS: true,
+                allowTaint: true,
+                logging: false
+            };
+            
+            console.log('캡처 시작...', options);
+            
+            // 캡처 실행
+            const canvas = await html2canvas(captureWrapper, options);
+            
+            // 임시 요소 제거
+            document.body.removeChild(captureWrapper);
+            
+            console.log('캡처 완료:', canvas.width, 'x', canvas.height);
+            
+            // 캔버스 검증
+            if (!canvas || canvas.width === 0 || canvas.height === 0) {
+                throw new Error('캔버스 생성에 실패했습니다.');
+            }
+            
+            // JPG로 변환
+            const dataURL = canvas.toDataURL('image/jpeg', 0.9);
+            
+            // 다운로드 링크 생성
             const now = new Date();
             const fileName = `센터방문개통요청서_${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, '0')}${String(now.getDate()).padStart(2, '0')}_${String(now.getHours()).padStart(2, '0')}${String(now.getMinutes()).padStart(2, '0')}.jpg`;
             
-            // 다운로드 실행 (고품질 JPG로 변경)
-            const imageData = canvas.toDataURL('image/jpeg', 0.95);
+            const link = document.createElement('a');
+            link.download = fileName;
+            link.href = dataURL;
+            link.style.display = 'none';
             
-            // 이미지 데이터가 유효한지 확인
-            if (imageData === 'data:,' || imageData.length < 100) {
-                throw new Error('이미지 데이터가 생성되지 않았습니다.');
-            }
+            document.body.appendChild(link);
+            link.click();
             
-            // 다운로드 실행 - 여러 방법 시도
-            try {
-                // 방법 1: Blob을 사용한 다운로드
-                const byteCharacters = atob(imageData.split(',')[1]);
-                const byteNumbers = new Array(byteCharacters.length);
-                for (let i = 0; i < byteCharacters.length; i++) {
-                    byteNumbers[i] = byteCharacters.charCodeAt(i);
+            setTimeout(() => {
+                if (document.body.contains(link)) {
+                    document.body.removeChild(link);
                 }
-                const byteArray = new Uint8Array(byteNumbers);
-                const blob = new Blob([byteArray], { type: 'image/png' });
-                const url = URL.createObjectURL(blob);
-                
-                const link = document.createElement('a');
-                link.download = fileName;
-                link.href = url;
-                link.style.display = 'none';
-                
-                document.body.appendChild(link);
-                link.click();
-                
-                // 잠시 후 링크와 URL 정리
-                setTimeout(() => {
-                    document.body.removeChild(link);
-                    URL.revokeObjectURL(url);
-                }, 1000);
-                
-            } catch (e) {
-                // 방법 2: 데이터 URL을 직접 사용
-                const link = document.createElement('a');
-                link.download = fileName;
-                link.href = imageData;
-                link.style.display = 'none';
-                
-                document.body.appendChild(link);
-                
-                // 클릭 이벤트 강제 실행
-                const event = new MouseEvent('click', {
-                    view: window,
-                    bubbles: true,
-                    cancelable: true
-                });
-                link.dispatchEvent(event);
-                
-                setTimeout(() => {
-                    document.body.removeChild(link);
-                }, 1000);
-            }
+            }, 1000);
             
-            this.showToast('이미지가 다운로드되었습니다.', 'success');
+            this.showToast('이미지가 다운로드되었습니다!', 'success');
             
         } catch (error) {
             console.error('다운로드 오류:', error);
