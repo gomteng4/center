@@ -575,10 +575,10 @@ class CenterVisitApp {
         const previewHTML = `
             <div class="document-header">
                 <div class="document-title">센터방문 개통 요청서</div>
-                <div style="position: absolute; top: 30px; right: 0; font-family: monospace; font-weight: bold; font-size: 16px; color: #000; background: none; border: none; box-shadow: none;">
-                    ${formData.prepaid ? '[✓] 선불' : '[  ] 선불'} &nbsp;&nbsp;
-                    ${formData.postpaid ? '[✓] 후불' : '[  ] 후불'} &nbsp;/&nbsp; 
-                    ${formData.newContract ? '[✓] 신규개통' : '[  ] 신규개통'} &nbsp;&nbsp;
+                <div style="text-align: right; margin-top: 10px; font-family: monospace; font-weight: bold; font-size: 16px; color: #000; background: none; border: none; box-shadow: none;">
+                    ${formData.prepaid ? '[✓] 선불' : '[  ] 선불'} 
+                    ${formData.postpaid ? '[✓] 후불' : '[  ] 후불'} / 
+                    ${formData.newContract ? '[✓] 신규개통' : '[  ] 신규개통'} 
                     ${formData.numberPorting ? '[✓] 번호이동' : '[  ] 번호이동'}
                 </div>
             </div>
