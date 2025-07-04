@@ -466,24 +466,29 @@ class CenterVisitApp {
     }
 
     adjustPreviewForMobile() {
-        const previewContainer = document.querySelector('.preview-container');
-        if (!previewContainer) return;
+        const previewContent = document.querySelector('.preview-content');
+        if (!previewContent) return;
 
         // 화면 크기에 따라 미리보기 크기 조정
         const screenWidth = window.innerWidth;
-        const screenHeight = window.innerHeight;
         
         if (screenWidth <= 768) {
-            // 모바일: 화면에 맞게 크기 조정
-            const scale = Math.min(screenWidth / 932, screenHeight / 1375) * 0.9;
-            previewContainer.style.transform = `scale(${scale})`;
-            previewContainer.style.transformOrigin = 'center top';
-            previewContainer.style.marginTop = '20px';
+            // 모바일: 원본 크기로 시작, 줌아웃으로 조절 가능
+            this.currentScale = 1.0; // 원본 크기로 시작
+            previewContent.style.transform = `scale(${this.currentScale})`;
+            previewContent.style.transformOrigin = 'center center';
+            
+            // 모바일에서는 자동으로 적절한 크기로 줌아웃
+            setTimeout(() => {
+                const autoScale = Math.min(screenWidth / 932, (window.innerHeight - 150) / 1375) * 0.8;
+                this.currentScale = autoScale;
+                this.applyZoom();
+            }, 200);
         } else {
             // 데스크톱: 기본 크기
-            previewContainer.style.transform = 'none';
-            previewContainer.style.transformOrigin = 'center';
-            previewContainer.style.marginTop = '0';
+            this.currentScale = 1.0;
+            previewContent.style.transform = 'scale(1.0)';
+            previewContent.style.transformOrigin = 'center center';
         }
     }
 
@@ -783,30 +788,45 @@ class CenterVisitApp {
             documentHeader.style.minHeight = '50px';
         }
 
-        // 체크박스 스타일
+        // 체크박스 스타일 - 완전히 제거하고 다시 적용
         const checkboxes = container.querySelectorAll('.checkbox-option');
         checkboxes.forEach(checkbox => {
-            checkbox.style.display = 'inline-block';
-            checkbox.style.width = '14px';
-            checkbox.style.height = '14px';
-            checkbox.style.border = '2px solid #000';
-            checkbox.style.marginRight = '3px';
-            checkbox.style.position = 'relative';
-            checkbox.style.verticalAlign = 'baseline';
-            checkbox.style.backgroundColor = 'white';
-            checkbox.style.background = 'white';
-            checkbox.style.boxShadow = 'none';
-            checkbox.style.outline = 'none';
-            checkbox.style.webkitAppearance = 'none';
-            checkbox.style.mozAppearance = 'none';
-            checkbox.style.appearance = 'none';
+            // 모든 기본 스타일 제거
+            checkbox.style.cssText = `
+                display: inline-block !important;
+                width: 12px !important;
+                height: 12px !important;
+                border: 1.5px solid #000 !important;
+                margin-right: 3px !important;
+                position: relative !important;
+                vertical-align: baseline !important;
+                background-color: white !important;
+                background: white !important;
+                box-shadow: none !important;
+                outline: none !important;
+                -webkit-appearance: none !important;
+                -moz-appearance: none !important;
+                appearance: none !important;
+                -webkit-box-shadow: none !important;
+                -moz-box-shadow: none !important;
+                filter: none !important;
+                border-radius: 0 !important;
+            `;
         });
 
         // 체크된 체크박스 스타일
         const checkedBoxes = container.querySelectorAll('.checkbox-option.checked');
         checkedBoxes.forEach(checkbox => {
-            checkbox.style.backgroundColor = '#ffff00';
-            checkbox.style.background = '#ffff00';
+            checkbox.style.backgroundColor = '#ffff00 !important';
+            checkbox.style.background = '#ffff00 !important';
+            
+            // 체크 표시 추가
+            checkbox.innerHTML = '✓';
+            checkbox.style.fontSize = '9px';
+            checkbox.style.fontWeight = 'bold';
+            checkbox.style.color = '#000';
+            checkbox.style.textAlign = 'center';
+            checkbox.style.lineHeight = '10px';
         });
 
         // 테이블 스타일

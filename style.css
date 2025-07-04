@@ -434,51 +434,56 @@ body {
         overflow: auto;
         -webkit-overflow-scrolling: touch;
         display: flex;
-        align-items: flex-start;
+        align-items: center;
         justify-content: center;
+        position: relative;
     }
     
     .zoom-controls {
         position: fixed;
-        top: 10px;
+        top: 60px;
         right: 10px;
         z-index: 1001;
-        background: rgba(0,0,0,0.8);
-        border-radius: 8px;
-        padding: 8px;
+        background: rgba(0,0,0,0.9);
+        border-radius: 12px;
+        padding: 10px;
         display: flex;
+        flex-direction: column;
         gap: 8px;
-        flex-wrap: wrap;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
     }
     
     .zoom-btn {
-        width: 45px;
-        height: 45px;
-        font-size: 20px;
-        background: rgba(255,255,255,0.9);
+        width: 50px;
+        height: 50px;
+        font-size: 22px;
+        background: rgba(255,255,255,0.95);
         color: #333;
         border: 2px solid #007bff;
-        border-radius: 8px;
+        border-radius: 10px;
         font-weight: bold;
         touch-action: manipulation;
+        cursor: pointer;
+        transition: all 0.2s ease;
     }
     
     .zoom-btn:hover, .zoom-btn:active {
         background: #007bff;
         color: white;
-        transform: scale(1.1);
+        transform: scale(1.05);
+        box-shadow: 0 2px 8px rgba(0,123,255,0.4);
     }
     
-    /* 모바일에서 미리보기 내용 초기 크기 조정 */
+    /* 모바일에서 미리보기 내용 원본 크기 */
     .preview-content {
-        transform: scale(0.9);
-        transform-origin: center top;
-        width: 100%;
-        margin-bottom: 20px;
-        padding: 20px;
-        font-size: 12px;
-        min-height: auto;
-        height: auto;
+        transform: scale(1.0);
+        transform-origin: center center;
+        width: 932px;
+        height: 1375px;
+        margin: 20px auto;
+        padding: 40px;
+        font-size: 17px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
     }
     
     /* 모바일에서 더 큰 터치 영역 */
