@@ -688,12 +688,12 @@ class CenterVisitApp {
                 throw new Error('캔버스가 비어있습니다.');
             }
             
-            // 파일명 생성
+            // 파일명 생성 (JPG로 변경)
             const now = new Date();
-            const fileName = `센터방문개통요청서_${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, '0')}${String(now.getDate()).padStart(2, '0')}_${String(now.getHours()).padStart(2, '0')}${String(now.getMinutes()).padStart(2, '0')}.png`;
+            const fileName = `센터방문개통요청서_${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, '0')}${String(now.getDate()).padStart(2, '0')}_${String(now.getHours()).padStart(2, '0')}${String(now.getMinutes()).padStart(2, '0')}.jpg`;
             
-            // 다운로드 실행
-            const imageData = canvas.toDataURL('image/png', 1.0);
+            // 다운로드 실행 (고품질 JPG로 변경)
+            const imageData = canvas.toDataURL('image/jpeg', 0.95);
             
             // 이미지 데이터가 유효한지 확인
             if (imageData === 'data:,' || imageData.length < 100) {
